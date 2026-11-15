@@ -1,0 +1,3 @@
+# 无需额外依赖。
+# 渲染用的 Pillow 是 AstrBot 自带的依赖（requirements.txt 里的 pillow），
+# 布局与渲染都只用标准库 + Pillow，不需要 Playwright、mermaid-cli 或 node。

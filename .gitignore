@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.pyo
+.test-data/
+.pytest_cache/
+.ruff_cache/
+.venv/
+# AstrBot 运行时数据（在插件目录里 import astrbot 时会被创建，别提交）
+/data/

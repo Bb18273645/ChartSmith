@@ -1,0 +1,14 @@
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = [".test-data", "preview"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "SIM"]
+ignore = [
+  "E501",  # 文档字符串里的 JSON 契约不折行才好复制
+  "SIM117",  # 测试里嵌套 with 更直白
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["layout", "render", "main", "examples"]

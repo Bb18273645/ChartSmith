@@ -1,0 +1,55 @@
+{
+  "max_nodes": {
+    "type": "int",
+    "description": "单张图最多画多少个节点",
+    "hint": "超过会被截断，并在图下方注明省略数量；手机上建议 10 个以内。",
+    "default": 16
+  },
+  "max_edges": {
+    "type": "int",
+    "description": "单张图最多画多少条连线",
+    "default": 24
+  },
+  "per_minute": {
+    "type": "int",
+    "description": "每个会话每分钟最多渲染几张图",
+    "hint": "0 表示不限制；群里防止刷图建议保持 6 以内。",
+    "default": 6
+  },
+  "max_parallel": {
+    "type": "int",
+    "description": "同时渲染的最大张数",
+    "hint": "按机器 CPU 核数调整，小内存机器建议 1~2。",
+    "default": 2
+  },
+  "scale": {
+    "type": "int",
+    "description": "输出像素倍率",
+    "hint": "2 = 两倍像素，手机上看更锐利（默认）；1 省流量但略糊；3 更细但更快到 QQ 的压缩线。",
+    "default": 2
+  },
+  "max_width": {
+    "type": "int",
+    "description": "输出图片宽度上限（像素）",
+    "hint": "超过就等比缩小。QQ 群图太大会被二次压缩，2048 一般够用；想更省流量可调到 1280。",
+    "default": 2048
+  },
+  "max_height": {
+    "type": "int",
+    "description": "输出图片高度上限（像素）",
+    "hint": "超过就等比缩小。长链路的竖图很容易超，3200 能在「不糊」和「不卡」之间取平衡。",
+    "default": 3200
+  },
+  "auto_direction": {
+    "type": "bool",
+    "description": "自动挑选排版方向",
+    "hint": "开启时在 TB / LR 里挑更窄的那版（手机按屏宽缩放，窄图字更大）。关闭后完全听模型给的 direction，缺省 TB。",
+    "default": true
+  },
+  "font_path": {
+    "type": "string",
+    "description": "中文字体文件路径",
+    "hint": "留空时自动探测系统字体（Windows 微软雅黑 / macOS 苹方 / Linux Noto CJK）。Docker 里中文变方块时，装 fonts-noto-cjk 或在这里填字体路径。",
+    "default": ""
+  }
+}
