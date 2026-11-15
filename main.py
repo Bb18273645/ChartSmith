@@ -27,9 +27,11 @@ from astrbot.api.event import AstrMessageEvent, filter
 from astrbot.api.star import Context, Star, StarTools
 
 try:  # AstrBot 以 data.plugins.<插件名>.main 的方式导入，走包内相对导入
+    from . import context as _context
     from . import layout as _layout
     from . import render as _render
 except ImportError:  # 直接 python main.py / 测试脚本里导入时的兜底
+    import context as _context
     import layout as _layout
     import render as _render
 
@@ -42,6 +44,8 @@ DEFAULTS = {
     "max_width": 2048,
     "max_height": 3200,
     "auto_direction": True,
+    "context_fill": True,
+    "context_messages": 6,
     "font_path": "",
 }
 
@@ -123,13 +127,14 @@ class Main(Star):
         适合：流程图、架构图、调用链、状态机、模块关系（3~16 个节点）。
 
         Args:
-            spec(string): 图的 JSON 字符串，形如 {"title": "标题", "subtitle": "可选", "direction": "TB", "nodes": [{"id": "a", "label": "客户端", "sub": "浏览器", "tone": "neutral"}], "edges": [{"from": "a", "to": "b", "label": "HTTPS", "style": "solid"}]}。tone 取 neutral/brand/info/success/warn/error，style 取 solid/dashed；direction 取 TB/LR 可省略（省略时自动挑更好读的方向）。label 里不要用 emoji。不要提供坐标。
+            spec(string): 图的 JSON 字符串，形如 {"title": "标题", "subtitle": "可选", "direction": "TB", "nodes": [{"id": "a", "label": "客户端", "sub": "浏览器", "tone": "neutral"}], "edges": [{"from": "a", "to": "b", "label": "HTTPS", "style": "solid"}]}。tone 取 neutral/brand/info/success/warn/error，style 取 solid/dashed；direction 取 TB/LR 可省略（省略时自动挑更好读的方向）。title 与 label 请优先使用最近对话里出现过的专有名词；留空时插件会按最近几条消息自动补全。label 里不要用 emoji。不要提供坐标。
         """
         if not self._allow(event):
             yield event.plain_result("画图太频繁了，休息一下再画 🐢")
             return
 
-        result = await self._produce(spec)
+        context_texts = await self._recent_texts(event)
+        result = await self._produce(spec, context_texts)
         if result.get("error"):
             yield event.plain_result(result["error"])
             return
@@ -138,10 +143,12 @@ class Main(Star):
         if error:
             yield event.plain_result(error)
             return
+        filled = result.get("filled") or []
+        extra = f"其中 {len(filled)} 处标题/标签按最近对话自动补全。" if filled else ""
         # 交给模型的工具结果：只说"已发出"，避免模型重复图里的名词
         yield (
             f"图已发出（{result['nodes']} 个节点，{result['width']}x{result['height']}px，"
-            f"{result['direction']} 排版）。"
+            f"{result['direction']} 排版）。{extra}"
             "接下来用不超过两句话说明结论或读图要点，不要复述图中已有的名词。"
         )
 
@@ -168,14 +175,15 @@ class Main(Star):
             yield item
 
     # ── 内部 ─────────────────────────────────────────────────────────
-    async def _produce(self, spec_text: str | dict) -> dict:
+    async def _produce(self, spec_text: str | dict, context_texts: list[str] | None = None) -> dict:
         """把 JSON 文本变成缓存里的 PNG。
 
         Args:
             spec_text: 模型或用户给出的结构 JSON。
+            context_texts: 最近几条对话文本（越新越靠前）；给了就按它补齐缺失的标题/标签。
 
         Returns:
-            成功时含 ``png`` / ``note`` / ``nodes`` / ``width`` / ``height``，
+            成功时含 ``png`` / ``note`` / ``nodes`` / ``width`` / ``height`` / ``filled``，
             失败时含 ``error``。
         """
         try:
@@ -188,6 +196,15 @@ class Main(Star):
                 "error": "图没画出来：结构 JSON 不合法。请只输出一个 JSON 对象，"
                 "包含 nodes 和 edges 两个数组。",
             }
+
+        filled: list[str] = []
+        if context_texts and bool(self.cfg["context_fill"]):
+            terms = _context.extract_terms(context_texts)
+            topic = _context.topic_from(context_texts, terms=terms)
+            spec, filled = _context.fill_spec(spec, terms, topic)
+            if filled:
+                logger.info(f"[chartsmith] 用最近对话补全：{', '.join(filled)}")
+
 
         try:
             drawing = _layout.build_layout_auto(
@@ -247,7 +264,44 @@ class Main(Star):
             "direction": drawing["direction"],
             "width": width,
             "height": height,
+            "filled": filled,
         }
+
+    async def _recent_texts(self, event: AstrMessageEvent) -> list[str]:
+        """取最近几条对话文本，用来自动补全图表的标题/标签。
+
+        Args:
+            event: 当前消息事件。
+
+        Returns:
+            文本列表，当前消息在最前，随后是会话历史里较新的消息；关闭或失败时返回空列表。
+        """
+        limit = int(self.cfg["context_messages"])
+        if limit <= 0 or not bool(self.cfg["context_fill"]):
+            return []
+
+        texts: list[str] = []
+        current = (event.get_message_str() or "").strip()
+        if current:
+            texts.append(current)
+
+        manager = getattr(self.context, "conversation_manager", None)
+        if manager is None or len(texts) >= limit:
+            return texts[:limit]
+
+        try:
+            conversation_id = await manager.get_curr_conversation_id(event.unified_msg_origin)
+            if not conversation_id:
+                return texts[:limit]
+            conversation = await manager.get_conversation(
+                event.unified_msg_origin,
+                conversation_id,
+            )
+            history = json.loads(conversation.history or "[]") if conversation else []
+            texts.extend(_context.parse_history(history, limit=limit - len(texts)))
+        except Exception as exc:  # noqa: BLE001 - 读历史失败不该影响出图
+            logger.debug(f"[chartsmith] 读取会话历史失败：{exc}")
+        return texts[:limit]
 
     async def _deliver(self, event: AstrMessageEvent, result: dict) -> str | None:
         """把图片和说明作为一条消息发出去。

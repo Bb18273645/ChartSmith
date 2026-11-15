@@ -46,6 +46,18 @@
     "hint": "开启时在 TB / LR 里挑更窄的那版（手机按屏宽缩放，窄图字更大）。关闭后完全听模型给的 direction，缺省 TB。",
     "default": true
   },
+  "context_fill": {
+    "type": "bool",
+    "description": "用最近对话补全标题与标签",
+    "hint": "开启后，模型没给 title 或写了「结构图/流程图」这类通名时，会用最近几条消息命名；节点 label 留空时按上下文术语补。只补不改。",
+    "default": true
+  },
+  "context_messages": {
+    "type": "int",
+    "description": "参与上下文补全的最近消息条数",
+    "hint": "含当前这条消息；0 表示关闭。条数越多越贴近上下文，但可能把无关话题带进来，默认 6。",
+    "default": 6
+  },
   "font_path": {
     "type": "string",
     "description": "中文字体文件路径",
