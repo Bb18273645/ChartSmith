@@ -7,7 +7,7 @@
   <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776ab">
   <img alt="Version" src="https://img.shields.io/badge/Version-1.0.0-2563eb">
   <img alt="License" src="https://img.shields.io/badge/License-AGPL%20v3%20%2F%20Commercial-663399">
-  <img alt="Tests" src="https://img.shields.io/badge/tests-42%20passed-0891b2">
+  <a href="https://github.com/Bb18273645/ChartSmith/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/Bb18273645/ChartSmith/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Dependencies" src="https://img.shields.io/badge/deps-%E9%9B%B6%E9%A2%9D%E5%A4%96%E4%BE%9D%E8%B5%96-f59e0b">
 </p>
 
