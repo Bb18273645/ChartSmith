@@ -1,17 +1,21 @@
 # 图匠 · ChartSmith
 
+<img src="logo.png" width="96" align="right" alt="ChartSmith logo">
+
 > 让 AI 把流程、架构、调用链画成一张**排版好的图片**，直接发到 QQ / Telegram / 飞书里，而不是甩一堆文字。
 
 <p>
   <img alt="AstrBot" src="https://img.shields.io/badge/AstrBot-%E2%89%A54.29-2563eb">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776ab">
-  <img alt="Version" src="https://img.shields.io/badge/Version-1.0.0-2563eb">
+  <img alt="Version" src="https://img.shields.io/badge/Version-1.0.1-2563eb">
   <img alt="License" src="https://img.shields.io/badge/License-AGPL%20v3%20%2F%20Commercial-663399">
   <a href="https://github.com/Bb18273645/ChartSmith/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/Bb18273645/ChartSmith/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Dependencies" src="https://img.shields.io/badge/deps-%E9%9B%B6%E9%A2%9D%E5%A4%96%E4%BE%9D%E8%B5%96-f59e0b">
 </p>
 
 `render_diagram` 一个工具，模型只给节点和连线，插件负责分层、走线、配色，然后用 Pillow 在本地直接画成 PNG 发出去。
+
+> 已上架 AstrBot 插件市场：WebUI → 插件 → 插件市场 → 搜索「图匠」或「ChartSmith」。
 
 | 登录流程 | 订单系统架构 | 状态机（带回边） |
 |---|---|---|
@@ -31,6 +35,7 @@
 - [工作原理](#工作原理)
 - [开发](#开发)
 - [常见问题](#常见问题)
+- [安全](#安全)
 - [已知限制](#已知限制)
 - [更新日志](#更新日志)
 - [License](#license)
@@ -69,6 +74,7 @@
 **插件市场**（推荐）
 
 WebUI → 插件 → 插件市场 → 搜索 `图匠` 或 `ChartSmith` → 安装。
+上架版本已通过 VirusTotal 与 AstrBot 的 Agent 安全检查。
 
 **手动安装**
 
@@ -255,6 +261,8 @@ ChartSmith/
 ├── NOTICE             # 版权与上游信息
 ├── ADDITIONAL-TERMS.md # 依 AGPL §7(b) 的附加署名要求
 ├── COMMERCIAL-LICENSE.md # 商业许可说明
+├── SECURITY.md        # 安全策略与报告渠道
+├── logo.png           # 插件市场图标
 └── pyproject.toml     # 只放 ruff 的格式/检查配置
 ```
 
@@ -304,6 +312,19 @@ $env:PYTHONPATH = 'D:\project\AstrBot\AstrBot-v4.29.4'
 
 ---
 
+## 安全
+
+图匠刻意收窄了权限，完整说明见 [`SECURITY.md`](SECURITY.md)：
+
+- **不发起任何网络请求**：渲染在本机用 Pillow 完成，不上传聊天内容、不调用第三方文转图服务；
+- **不执行子进程**，运行时不使用 `eval` / `exec` / `pickle`，没有动态代码分支；
+- **只写自己的缓存目录**：`data/plugin_data/astrbot_plugin_chartsmith/cache/`，7 天 / 200 张自动清理；
+- **不需要管理员权限**，依赖只有 AstrBot 自带的 Pillow。
+
+发现安全问题请走 [Security Advisories](https://github.com/Bb18273645/ChartSmith/security/advisories/new) 私密报告。
+
+---
+
 ## 已知限制
 
 - 输出是**静态图片**：聊天平台没有 DOM，点不开、切不了主题。
@@ -319,7 +340,7 @@ $env:PYTHONPATH = 'D:\project\AstrBot\AstrBot-v4.29.4'
 
 ## 更新日志
 
-见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **v1.0.0**。
+见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **v1.0.1**。
 
 ---
 
