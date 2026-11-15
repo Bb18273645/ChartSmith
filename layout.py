@@ -1,5 +1,6 @@
-# Copyright (c) 2026 Bb18273645. 保留所有权利。
-# 非商业用途免费；商业用途需作者书面同意；二改须注明上游并开源，详见 LICENSE。
+# Copyright (c) 2026 Bb18273645.
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# 本作品以 AGPL-3.0-or-later 授权；闭源商业使用需另行取得商业许可，详见 COMMERCIAL-LICENSE.md。
 """图匠的分层布局引擎。
 
 职责很窄：吃一份「节点 + 连线」的结构 JSON，吐出每个节点的像素坐标和每条连线的折线点。

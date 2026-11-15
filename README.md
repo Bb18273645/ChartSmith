@@ -5,7 +5,7 @@
 <p>
   <img alt="AstrBot" src="https://img.shields.io/badge/AstrBot-%E2%89%A54.29-2563eb">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776ab">
-  <img alt="License" src="https://img.shields.io/badge/License-%E9%9D%9E%E5%95%86%E4%B8%9A%C2%B7%E7%BD%B2%E5%90%8D%C2%B7%E5%90%8C%E6%BA%90-ef4444">
+  <img alt="License" src="https://img.shields.io/badge/License-AGPL%20v3%20%2F%20Commercial-663399">
   <img alt="Tests" src="https://img.shields.io/badge/tests-42%20passed-0891b2">
   <img alt="Dependencies" src="https://img.shields.io/badge/deps-%E9%9B%B6%E9%A2%9D%E5%A4%96%E4%BE%9D%E8%B5%96-f59e0b">
 </p>
@@ -250,6 +250,9 @@ ChartSmith/
 ├── preview/           # 预览图
 ├── docs/              # 插件市场文案、发布说明模板、二改与授权须知
 ├── CHANGELOG.md       # 更新日志
+├── NOTICE             # 版权与上游信息
+├── ADDITIONAL-TERMS.md# 依 AGPL §7(b) 的附加署名要求
+├── COMMERCIAL-LICENSE.md # 商业许可说明
 └── pyproject.toml     # 只放 ruff 的格式/检查配置
 ```
 
@@ -320,20 +323,29 @@ $env:PYTHONPATH = 'D:\project\AstrBot\AstrBot-v4.29.4'
 
 ## License
 
-本项目的授权是**自定义的社区许可**（[LICENSE](LICENSE)），一句话概括：
+本项目采用 **AGPL-3.0-or-later + 商业双许可**：
 
-- **非商业用途免费**：个人自用、学习研究、非营利组织使用都可以，修改也行；
-- **商业化必须书面同意**：收费产品/服务、代运维、SaaS、集成进生产经营系统、付费分发、以本项目为卖点的宣传，都要先取得作者的书面许可并另签商业授权；
-- **二改必须说明上下游**：写明原作者、原始仓库、所基于的版本、你的修改内容；
-- **二改必须开源**：以本许可或更严格的协议公开完整源代码，不能只发编译产物或闭源分发；
-- **不得删署名、不得声称原创、不得暗示作者为你的修改背书**。
+| 你的情况 | 用哪种许可 | 费用 |
+|---|---|---|
+| 个人使用、学习研究、自建自用 | AGPL-3.0-or-later | 免费 |
+| 二次开发后**按 AGPL 开源**发布 | AGPL-3.0-or-later | 免费（必须附源码、保留声明、标注上游） |
+| 集成进**闭源**产品、闭源内部系统 | 商业许可 | 需购买/协商 |
+| 做 SaaS，**不想公开**修改后的源码 | 商业许可 | 需购买/协商 |
+| 打包进闭源发行版、付费课程、付费整合包 | 商业许可 | 需购买/协商 |
 
-> 注意：这是 **source-available** 许可，不是 OSI 认定的开源许可（因为限制商业使用）。
-> 之所以这样选，是为了让插件可以自由传播、同时把商业化授权留在作者手里。
-> 商业授权怎么申请、二改声明怎么写（含可复制模板）、常见问题，见 [`docs/二改与授权须知.md`](docs/二改与授权须知.md)。
-> 请通过仓库 Issue 或作者主页联系作者，**收到书面回复后再进行商业使用**。
+**AGPL 的要点**：允许商业使用，但一旦你把修改版本分发出去、或把它作为网络服务提供给别人用，
+就必须以 AGPL 公开完整源代码（包括你的修改）。不想开源，就走商业许可。
 
-Copyright (c) 2026 Bb18273645. 保留所有权利。
+- [`LICENSE`](LICENSE)：GNU AGPL-3.0 全文（官方文本）
+- [`NOTICE`](NOTICE)：版权与上游信息
+- [`ADDITIONAL-TERMS.md`](ADDITIONAL-TERMS.md)：依 AGPL 第 7(b) 条附加的署名与来源说明要求
+- [`COMMERCIAL-LICENSE.md`](COMMERCIAL-LICENSE.md)：商业许可能做什么、怎么申请
+- [`docs/二改与授权须知.md`](docs/二改与授权须知.md)：场景速查、合规三件套、二改声明模板、FAQ
+
+> 以上是许可摘要，**不构成法律意见**；商业场景请以 `LICENSE`、`ADDITIONAL-TERMS.md`
+> 与双方签署的商业许可协议原文为准。
+
+Copyright (c) 2026 Bb18273645.
 
 ---
 
@@ -351,6 +363,6 @@ locally with Pillow. No browser, no remote rendering service, no extra dependenc
 - Paste [`提示词.md`](提示词.md) into your persona's system prompt so the model knows when to call `render_diagram`.
 - JSON contract: `title`, `subtitle`, `direction` (`TB`/`LR`), `nodes[{id,label,sub,tone}]`, `edges[{from,to,label,style}]`. No coordinates.
 - Commands: `/diagram {json}` and `/图匠 {json}` for debugging without the model.
-- License: custom community license — free for non-commercial use; commercial use requires the author's prior written permission; derivative works must credit the upstream project and publish their complete source under the same (or a stricter) license. See [LICENSE](LICENSE).
+- License: **AGPL-3.0-or-later + commercial dual license**. Free to use, modify and redistribute under the AGPL (you must publish your modifications and keep the notices); a commercial license is available for closed-source integration, closed SaaS deployments and other cases where you cannot comply with the AGPL. See [LICENSE](LICENSE), [ADDITIONAL-TERMS.md](ADDITIONAL-TERMS.md) and [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md).
 
 </details>

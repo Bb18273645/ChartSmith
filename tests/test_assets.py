@@ -1,5 +1,6 @@
-# Copyright (c) 2026 Bb18273645. 保留所有权利。
-# 非商业用途免费；商业用途需作者书面同意；二改须注明上游并开源，详见 LICENSE。
+# Copyright (c) 2026 Bb18273645.
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# 本作品以 AGPL-3.0-or-later 授权；闭源商业使用需另行取得商业许可，详见 COMMERCIAL-LICENSE.md。
 """插件资产校验：metadata / 配置 schema / 工具 docstring。
 
 这些文件 AstrBot 都直接解析，写错不会报错、只会「静默失效」，

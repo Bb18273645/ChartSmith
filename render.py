@@ -1,5 +1,6 @@
-# Copyright (c) 2026 Bb18273645. 保留所有权利。
-# 非商业用途免费；商业用途需作者书面同意；二改须注明上游并开源，详见 LICENSE。
+# Copyright (c) 2026 Bb18273645.
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# 本作品以 AGPL-3.0-or-later 授权；闭源商业使用需另行取得商业许可，详见 COMMERCIAL-LICENSE.md。
 """图匠的图片渲染器：把 ``layout.build_layout`` 的坐标画成 PNG。
 
 用 Pillow 而不是浏览器截图：聊天平台只需要一张图，本地直接画既省掉一次网络往返，

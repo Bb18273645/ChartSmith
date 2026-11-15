@@ -1,0 +1,22 @@
+ChartSmith（AstrBot 插件 astrbot_plugin_chartsmith）
+Copyright (c) 2026 Bb18273645
+上游仓库 / Upstream: https://github.com/Bb18273645/astrbot_plugin_chartsmith
+
+本作品以 GNU Affero General Public License v3.0 or later 授权（见 LICENSE）。
+另提供商业许可，供希望闭源使用、闭源集成或免开源部署的用户选择（见 COMMERCIAL-LICENSE.md）。
+
+依照 AGPL-3.0 第 7(b) 条，本项目附加了署名与来源说明要求（见 ADDITIONAL-TERMS.md）。
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+
+A commercial license is also available; see COMMERCIAL-LICENSE.md.

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-# Copyright (c) 2026 Bb18273645. 保留所有权利。
-# 非商业用途免费；商业用途需作者书面同意；二改须注明上游并开源，详见 LICENSE。
+# Copyright (c) 2026 Bb18273645.
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# 本作品以 AGPL-3.0-or-later 授权；闭源商业使用需另行取得商业许可，详见 COMMERCIAL-LICENSE.md。
 """生成示例图片，用眼睛验收版式。
 
 用法：python scripts/preview.py [输出目录]
