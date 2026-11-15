@@ -8,7 +8,7 @@ desc: |
 short_desc: 结构化内容 → 排版好的图
 version: "0.2.0"
 author: Bb18273645
-repo: https://github.com/Bb18273645/astrbot_plugin_chartsmith
+repo: https://github.com/Bb18273645/ChartSmith
 social_link: https://github.com/Bb18273645
 astrbot_version: ">=4.29,<5"
 support_platforms:

@@ -72,9 +72,10 @@ WebUI → 插件 → 插件市场 → 搜索 `图匠` 或 `ChartSmith` → 安�
 **手动安装**
 
 ```bash
-# 注意：目录名必须和 metadata.yaml 里的 name 一致
+# 仓库名是 ChartSmith，插件标识是 astrbot_plugin_chartsmith：
+# clone 时显式指定目录名，否则 AstrBot 会按目录名和 metadata 的 name 对不上
 cd AstrBot/data/plugins
-git clone https://github.com/Bb18273645/astrbot_plugin_chartsmith.git
+git clone https://github.com/Bb18273645/ChartSmith.git astrbot_plugin_chartsmith
 ```
 
 然后在 WebUI 的插件页点刷新图标重载。

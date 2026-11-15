@@ -51,7 +51,7 @@
 
 通过以下任一渠道发起，标题加 `[商业授权]`：
 
-- GitHub Issue：https://github.com/Bb18273645/astrbot_plugin_chartsmith/issues
+- GitHub Issue：https://github.com/Bb18273645/ChartSmith/issues
 - 或在仓库主页找到作者联系方式（`social_link`）。
 
 申请时请说明：
