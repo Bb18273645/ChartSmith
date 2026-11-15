@@ -252,7 +252,7 @@ ChartSmith/
 ├── docs/              # 插件市场文案、发布说明模板、二改与授权须知
 ├── CHANGELOG.md       # 更新日志
 ├── NOTICE             # 版权与上游信息
-├── ADDITIONAL-TERMS.md# 依 AGPL §7(b) 的附加署名要求
+├── ADDITIONAL-TERMS.md # 依 AGPL §7(b) 的附加署名要求
 ├── COMMERCIAL-LICENSE.md # 商业许可说明
 └── pyproject.toml     # 只放 ruff 的格式/检查配置
 ```
