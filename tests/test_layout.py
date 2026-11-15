@@ -106,6 +106,13 @@ class LayerTest(unittest.TestCase):
         self.assertGreater(len({n["layer"] for n in drawing["nodes"]}), 1)
         self.assertEqual(len(drawing["edges"]), 3)
 
+    def test_long_title_widens_canvas(self):
+        short = layout.build_layout({"title": "短", "nodes": [{"id": "a", "label": "A"}]})
+        long = layout.build_layout({"title": "一" * 30, "nodes": [{"id": "a", "label": "A"}]})
+        self.assertGreater(long["width"], short["width"])
+        # 估算宽度：中文按 1 字宽 × 字号，画布至少要能放下标题 + 两侧留白
+        self.assertGreaterEqual(long["width"], 30 * layout.TITLE_SIZE + layout.PAD * 2)
+
     def test_no_nodes_raises(self):
         with self.assertRaises(ValueError):
             layout.build_layout({"nodes": [], "edges": []})

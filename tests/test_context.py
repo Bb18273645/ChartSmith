@@ -74,6 +74,21 @@ class TopicTest(unittest.TestCase):
         topic = context.topic_from(["画一下", "历史里的 Play Integrity 是什么"] , terms=["DroidGuard"])
         self.assertEqual(topic, "DroidGuard")
 
+    def test_term_join_respects_limit(self):
+        terms = ["Play Integrity", "DroidGuard", "SUFS"]
+        topic = context.topic_from(["画一下这条链路"], terms=terms)
+        self.assertEqual(topic, "Play Integrity · DroidGuard")
+
+    def test_term_join_honours_smaller_limit(self):
+        terms = ["Play Integrity", "DroidGuard", "SUFS"]
+        topic = context.topic_from(["画一下这条链路"], terms=terms, limit=20)
+        self.assertEqual(topic, "Play Integrity")
+
+    def test_single_long_term_is_clipped(self):
+        topic = context.topic_from(["画一下"], terms=["一" * 40], limit=12)
+        self.assertEqual(len(topic), 12)
+        self.assertTrue(topic.endswith("…"))
+
 
 class ParseHistoryTest(unittest.TestCase):
     HISTORY = [
@@ -130,6 +145,20 @@ class FillSpecTest(unittest.TestCase):
         context.fill_spec(spec, ["T1"], "主题")
         self.assertEqual(spec["title"], "结构图")
         self.assertEqual(spec["nodes"][0]["label"], "")
+
+    def test_skips_terms_already_used_by_existing_labels(self):
+        spec = {
+            "nodes": [
+                {"id": "a", "label": ""},
+                {"id": "b", "label": "DroidGuard 判定"},
+                {"id": "c", "label": ""},
+            ]
+        }
+        filled_spec, _ = context.fill_spec(
+            spec, ["Play Integrity", "DroidGuard", "SUFS"], "标题"
+        )
+        labels = [node.get("label") for node in filled_spec["nodes"]]
+        self.assertEqual(labels, ["Play Integrity", "DroidGuard 判定", "SUFS"])
 
     def test_no_terms_leaves_labels(self):
         spec = {"nodes": [{"id": "a", "label": ""}]}

@@ -33,6 +33,8 @@ GENERIC_TITLES = frozenset(
 
 _CODE_SPAN = re.compile(r"`([^`\n]{1,32})`")
 _QUOTED = re.compile(r"[「『“\"]([^」』”\"\n]{1,24})[」』”\"]")
+# 连续大写开头的英文词组（Play Integrity / Google Play），整体比拆成单词更有意义
+_ASCII_PHRASE = re.compile(r"\b[A-Z][a-z]{1,}[A-Za-z0-9_.+-]*(?:\s+[A-Z][a-z]{1,}[A-Za-z0-9_.+-]*){1,3}\b")
 _ASCII_TERM = re.compile(r"[A-Za-z][A-Za-z0-9_.+#-]{1,23}")
 _CJK_RUN = re.compile(r"[\u4e00-\u9fff]{2,16}")
 # 中文片段内部的连接词：切开后才不会把「从设备环境到判定结果」当成一个词
@@ -55,9 +57,11 @@ _REQUEST_ONLY = re.compile(
     r"可视化一下|做个图|做张图|如图|下图|上图|这张图|这个图|那个图)$"
 )
 # 问句碎片（「这一串是什么顺序」）当标签毫无信息量，直接丢
-_QUESTION_HINTS = ("什么", "怎么", "如何", "为什么", "哪", "多少", "是不是", "有没有", "吗", "呢", "吧")
+_QUESTION_HINTS = ("什么", "怎么", "如何", "为什么", "哪", "几", "多少", "是不是", "有没有", "吗", "呢", "吧")
+# 情态/动词碎片（「判定结果会分成」），当标签同样没意义
+_AUX_FRAGMENT = re.compile(r"会[分走发生变用来去在把被]|要不要|能不能|会不会|有没有")
 # 以这些词开头的中文片段基本是动词短语（「先看」「采集的信号」），不适合当标签
-_VERB_PREFIXES = ("先", "再", "然后", "所以", "但是", "而且", "如果", "因为", "可以", "需要", "应该", "不要", "接着", "最后", "以及", "还是", "可能", "至少")
+_VERB_PREFIXES = ("先看", "再看", "先", "再", "然后", "所以", "但是", "而且", "如果", "因为", "可以", "需要", "应该", "不要", "接着", "最后", "以及", "还是", "可能", "至少", "采集", "拿到", "查看", "检查")
 
 # 句首句尾常见的虚词/连接词，中文片段两端剥掉
 _CJK_EDGE_FILLER = set("从到和与跟了的着是在把被让就都也再又还并而或及等这那么一个种些我们你们他们您我你它")
@@ -126,6 +130,7 @@ def extract_terms(texts: list[str], limit: int = 8) -> list[str]:
             continue
         bucket.extend(span.strip() for span in _CODE_SPAN.findall(plain))
         bucket.extend(span.strip() for span in _QUOTED.findall(plain))
+        bucket.extend(phrase.strip() for phrase in _ASCII_PHRASE.findall(plain))
         bucket.extend(word for word in _ASCII_TERM.findall(plain) if _looks_like_term(word))
         for run in _CJK_RUN.findall(plain):
             for piece in _CJK_SPLIT.split(run):
@@ -134,6 +139,14 @@ def extract_terms(texts: list[str], limit: int = 8) -> list[str]:
                 if not piece or _DEICTIC.match(piece) or _REQUEST_ONLY.match(piece):
                     continue
                 candidate = _trim_cjk(piece)
+                # 反复剥动词前缀：「先采集设备环境信号」→「采集设备环境信号」→「设备环境信号」
+                for _ in range(3):
+                    for prefix in _VERB_PREFIXES:
+                        if candidate.startswith(prefix) and len(candidate) > len(prefix):
+                            candidate = _trim_cjk(candidate[len(prefix) :])
+                            break
+                    else:
+                        break
                 if candidate and not _DEICTIC.match(candidate):
                     bucket.append(candidate)
 
@@ -149,6 +162,8 @@ def extract_terms(texts: list[str], limit: int = 8) -> list[str]:
         if _REQUEST_ONLY.match(term) or _DEICTIC.match(term):
             continue
         if any(hint in term for hint in _QUESTION_HINTS):
+            continue
+        if _AUX_FRAGMENT.search(term):
             continue
         if term.startswith(_VERB_PREFIXES):
             continue
@@ -177,7 +192,7 @@ def _topic_candidate(text: object) -> str:
     return _TRAILING.sub("", plain).strip()
 
 
-def topic_from(texts: list[str], limit: int = 24, terms: list[str] | None = None) -> str:
+def topic_from(texts: list[str], limit: int = 30, terms: list[str] | None = None) -> str:
     """取一个能当标题的短句；当前消息不够具体时用术语拼一个。
 
     只从**当前这条消息**里找句子（历史消息容易是问句或闲聊，拼出来的标题很怪），
@@ -197,9 +212,19 @@ def topic_from(texts: list[str], limit: int = 24, terms: list[str] | None = None
             return candidate if len(candidate) <= limit else candidate[: limit - 1] + "…"
 
     if terms:
-        joined = " · ".join(term for term in terms[:3] if term)
+        parts: list[str] = []
+        for term in terms[:4]:
+            if not term:
+                continue
+            candidate = " · ".join([*parts, term])
+            if len(candidate) > limit:
+                break
+            parts.append(term)
+        joined = " · ".join(parts)
         if joined:
-            return joined if len(joined) <= limit else joined[: limit - 1] + "…"
+            return joined
+        first = terms[0]
+        return first if len(first) <= limit else first[: limit - 1] + "…"
     return ""
 
 
@@ -266,7 +291,14 @@ def fill_spec(
     if isinstance(raw_nodes, list) and terms:
         nodes: list = []
         pool = [term for term in terms if term]
-        used = 0
+        # 模型已经写过的 label 里出现过的词，不再拿来补空位，避免同一张图里重复
+        known = " ".join(
+            str(raw.get("label") or "")
+            for raw in raw_nodes
+            if isinstance(raw, dict)
+        ).lower()
+        used_terms: set[str] = set()
+        filled_count = 0
         for raw in raw_nodes:
             if not isinstance(raw, dict):
                 nodes.append(raw)
@@ -274,10 +306,19 @@ def fill_spec(
             node = dict(raw)
             label = str(node.get("label") or "").strip()
             node_id = str(node.get("id") or "").strip()
-            if (not label or label == node_id) and used < max_labels and used < len(pool):
-                node["label"] = pool[used]
-                used += 1
-                filled.append(f"label:{node_id or used}")
+            if (not label or label == node_id) and filled_count < max_labels:
+                replacement = ""
+                for term in pool:
+                    key = term.lower()
+                    if key in used_terms or key in known:
+                        continue
+                    replacement = term
+                    used_terms.add(key)
+                    break
+                if replacement:
+                    node["label"] = replacement
+                    filled_count += 1
+                    filled.append(f"label:{node_id or filled_count}")
             nodes.append(node)
         result["nodes"] = nodes
 

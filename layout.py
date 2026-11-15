@@ -581,7 +581,11 @@ def build_layout(
         content_h = max(row_spans)
 
     header = HEADER_WITH_SUB if data["subtitle"] else HEADER_PLAIN
-    width = max(560, content_w) + PAD * 2 + extra_right
+    # 标题/副标题比内容还宽时也要放得下，否则文字会被画布裁掉
+    header_width = measure(data["title"], TITLE_SIZE)
+    if data["subtitle"]:
+        header_width = max(header_width, measure(data["subtitle"], SUB_SIZE))
+    width = max(560, content_w, header_width) + PAD * 2 + extra_right
     height = header + content_h + extra_bottom + (FOOTER_H if crowded else 10)
 
     # 坐标：TB 按行、LR 按列，都需要在内容区居中
