@@ -5,6 +5,7 @@
 <p>
   <img alt="AstrBot" src="https://img.shields.io/badge/AstrBot-%E2%89%A54.29-2563eb">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776ab">
+  <img alt="Version" src="https://img.shields.io/badge/Version-1.0.0-2563eb">
   <img alt="License" src="https://img.shields.io/badge/License-AGPL%20v3%20%2F%20Commercial-663399">
   <img alt="Tests" src="https://img.shields.io/badge/tests-42%20passed-0891b2">
   <img alt="Dependencies" src="https://img.shields.io/badge/deps-%E9%9B%B6%E9%A2%9D%E5%A4%96%E4%BE%9D%E8%B5%96-f59e0b">
@@ -318,7 +319,7 @@ $env:PYTHONPATH = 'D:\project\AstrBot\AstrBot-v4.29.4'
 
 ## 更新日志
 
-见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **v0.2.0**。
+见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **v1.0.0**。
 
 ---
 

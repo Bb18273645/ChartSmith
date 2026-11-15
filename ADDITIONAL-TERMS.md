@@ -16,13 +16,13 @@
 
 - 原作者：`Bb18273645`
 - 原始项目：`ChartSmith`（`https://github.com/Bb18273645/ChartSmith`）
-- 所基于的版本号或 commit（例如 `v0.2.0` 或 `a9a4278`）
+- 所基于的版本号或 commit（例如 `v1.0.0` 或对应 commit 哈希）
 - 你的修改摘要（一句话即可）
 
 示例：
 
 ```markdown
-本作品基于 ChartSmith v0.2.0（作者 Bb18273645，
+本作品基于 ChartSmith v1.0.0（作者 Bb18273645，
 https://github.com/Bb18273645/ChartSmith）修改。
 修改内容：增加时序图支持、调整配色。
 ```

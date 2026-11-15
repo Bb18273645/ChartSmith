@@ -6,7 +6,7 @@ desc: |
   模型只给节点和连线，插件负责分层排版、正交走线，用 Pillow 在本地渲染成 PNG：零额外依赖、离线可用、不经过第三方渲染服务。
   支持自动挑选上下/左右方向、2 倍像素输出、emoji 清洗、按会话限流与按内容缓存。
 short_desc: 结构化内容 → 排版好的图
-version: "0.2.0"
+version: "1.0.0"
 author: Bb18273645
 repo: https://github.com/Bb18273645/ChartSmith
 social_link: https://github.com/Bb18273645

@@ -2,6 +2,21 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.0.0] - 2026-11-15
+
+首个正式发布版本：功能、配置项与 JSON 契约从此保持稳定（0.2.0 的能力全部包含在内）。
+
+### 新增
+
+- **授权：AGPL-3.0-or-later + 商业双许可**。`LICENSE` 为 AGPL 官方全文；新增 `NOTICE`（版权与上游信息）、`ADDITIONAL-TERMS.md`（依 AGPL §7(b) 的署名与上游说明要求）、`COMMERCIAL-LICENSE.md`（商业许可说明与申请流程）；源文件加入 `SPDX-License-Identifier: AGPL-3.0-or-later`。
+- **开源发布配套**：GitHub 用 README（预览图 / 安装 / JSON 契约 / 配置 / QQ·TG 适配 / 工作原理 / FAQ）、`docs/插件介绍.md`（插件市场提交文案）、`docs/发布说明-v1.0.0.md`（Release 正文）、`docs/二改与授权须知.md`（AGPL 合规与商业授权指南）。
+- `.gitattributes` 统一 LF 换行；`.gitignore` 排除运行时 `data/` 与缓存目录。
+
+### 变更
+
+- `metadata.yaml`：版本号改为 `1.0.0`，补充 `repo`、`social_link`、`tags` 与多行 `desc`，便于上架插件市场。
+- 文档与示例统一按 `v1.0.0` 标注。
+
 ## [0.2.0] - 2026-11-15
 
 面向 QQ / Telegram 的打磨版本：图片发得更干净、手机上看字更大、失败不再静默。
