@@ -88,9 +88,12 @@ class RenderSmokeTest(unittest.TestCase):
             self.assertEqual(width, expected_w)
 
     def test_measure_is_monotonic(self):
+        # 不依赖具体字体：CI 的 Linux runner 上可能只有拉丁字体（中文落到 .notdef 方块），
+        # 所以只比较同一种文字的宽度，不比较中英文谁更宽。
         metrics = render.TextMetrics(scale=2)
         self.assertLess(metrics.measure("ab", 15), metrics.measure("abcd", 15))
-        self.assertGreater(metrics.measure("中文", 15), metrics.measure("ab", 15))
+        self.assertGreater(metrics.measure("中", 15), 0)
+        self.assertGreater(metrics.measure("中中", 15), metrics.measure("中", 15))
 
     def test_render_rejects_empty_layout(self):
         with tempfile.TemporaryDirectory() as tmp:
