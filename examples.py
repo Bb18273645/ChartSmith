@@ -132,3 +132,28 @@ SAMPLES = {
     "05-trimmed": TRIMMED,
     "06-status": DEPLOY_STATUS,
 }
+
+# 上下文补全示例：模型只给了泛标题 + 两个空 label，其余由最近对话补出来
+CONTEXT_DEMO = {
+    "history": [
+        "画一下这条链路",
+        "Play Integrity 判定链怎么走的？",
+        "DroidGuard 先采集设备环境信号，再看 SUFS 有没有痕迹",
+        "判定结果会分成 MEETS 和 BASIC 几档",
+    ],
+    "spec": {
+        "title": "结构图",
+        "direction": "TB",
+        "nodes": [
+            {"id": "env", "tone": "warn"},
+            {"id": "guard", "label": "DroidGuard 判定", "tone": "info"},
+            {"id": "res", "tone": "success"},
+            {"id": "app", "label": "目标应用", "tone": "brand"},
+        ],
+        "edges": [
+            {"from": "env", "to": "guard", "label": "信号"},
+            {"from": "guard", "to": "res", "label": "判定"},
+            {"from": "res", "to": "app", "label": "放行/拦截"},
+        ],
+    },
+}

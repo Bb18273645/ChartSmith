@@ -16,9 +16,31 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+import context  # noqa: E402
 import layout  # noqa: E402
 import render  # noqa: E402
-from examples import SAMPLES  # noqa: E402
+from examples import CONTEXT_DEMO, SAMPLES  # noqa: E402
+
+
+def render_context_demo(out_dir: Path, metrics: render.TextMetrics) -> None:
+    """把「标题/标签从最近对话补全」的效果也出一张图，方便 README 引用。"""
+    history = CONTEXT_DEMO["history"]
+    terms = context.extract_terms(history)
+    topic = context.topic_from(history, terms=terms)
+    spec, filled = context.fill_spec(CONTEXT_DEMO["spec"], terms, topic)
+    drawing = layout.build_layout_auto(spec, measure=metrics.measure)
+    png = render.render_layout(
+        drawing,
+        out_dir / "07-context.png",
+        scale=2,
+        max_width=2048,
+        max_height=3200,
+    )
+    width, height = render.image_size(png)
+    print(
+        f"07-context.png  {width}x{height}（{drawing['direction']} 排版）  "
+        f"自动补全：{', '.join(filled) or '无'}  标题：{spec['title']}"
+    )
 
 
 def main() -> int:
@@ -44,6 +66,8 @@ def main() -> int:
             f"{png.stat().st_size // 1024} KB"
             + (f"  note={drawing['note']}" if drawing["note"] else "")
         )
+
+    render_context_demo(out_dir, metrics)
     return 0
 
 
